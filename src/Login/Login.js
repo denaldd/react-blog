@@ -49,12 +49,9 @@ class Login extends React.Component {
           fetch('http://localhost:3003/register', {
             method: 'POST',
             body: data,
-            mode: 'no-cors',
             headers:{
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
-                },
+              Accept: 'application/json',
+            },
           })
           this.setState({name: '', email: '', password: '',country: ''});
         } else {
@@ -69,32 +66,20 @@ class Login extends React.Component {
           LoginEmail: this.state.LoginEmail,
           LoginPassword: this.state.LoginPassword
         };
-        console.log(payload);
         localStorage.setItem("user", JSON.stringify(payload));
         data.append("form", JSON.stringify(payload));
-          fetch('http://localhost:3003/login', {
-            method: 'POST',
-            body: data,
-            mode: 'no-cors',
-            headers:{
-              'Accept': "*",
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Request-Origin': '*',
-                'Access-Control-Request-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
-              },
-          });
-          setTimeout(function(){
-            fetch("http://localhost:3003/login", {
-              method: "POST",
-              mode: 'no-cors',
-              headers: {
-                'Accept': "*",
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Request-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                'Access-Control-Request-Headers': '*'
-              }
-          })
-          }, 5000);
+        const options = {
+          method: 'POST',
+          body: data,
+          headers:{
+            Accept: 'application/json',
+          },
+        };
+        fetch('http://localhost:3003/login', options)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          console.log(data)
+        });
         event.preventDefault();
       }
   render() {

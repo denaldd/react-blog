@@ -14,14 +14,13 @@ var localStorage = require('localStorage');
 var upload = multer();
 var app = express();
 var config = require ("./config");
-// Setting CORS options
-var corsOptions = {
-	"origin": ["http://localhost"],
-	"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-	"preflightContinue": false,
-	"credentials": true,
-	'allowedHeaders': ['sessionId', 'Content-Type']
-};
+
+
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 
 var con = mysql.createConnection({
 	host: config.dbUrl,
@@ -30,30 +29,18 @@ var con = mysql.createConnection({
 	database: config.dbName
   });
 
-app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(session({
-	secret: "HYqrvagQ#&!F!%V]Ww/4KiVs$s",
-	resave: true,
-	saveUninitialized: true
-}));
-// app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
-// for parsing application/json
 app.use(bodyParser.json()); 
 
-// for parsing application/xwww-
-app.use(bodyParser.urlencoded({ extended: false })); 
-//form-urlencoded
+app.use(passport.initialize());
+app.use(passport.session());
 
-// for parsing multipart/form-data
+app.use(bodyParser.urlencoded({ extended: false })); 
+
 app.use(upload.array()); 
 app.use(express.static('public'));
 
-app.post('/register', function(req, res){
-   res.header('Access-Control-Allow-Origin', '*');
-   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+app.post('/register', function(req, res, next){
    var a = req.body.form;
    var b = JSON.parse(a);
    var country = b.country;
@@ -65,31 +52,28 @@ app.post('/register', function(req, res){
 		con.query(sql,  [email, name, password, country], function (err, result) {
 	  	if (!err){
 			res.json(b);
-			console.log("1 record inserted");
 		}
 		});
 	});
 });
 
- app.post("/login", function(req, res) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Request-Origin', '*');
-	res.header('Access-Control-Allow-Credentials', 'true');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With');
+ app.post("/login", function(req, res, next) {
 	var a = req.body.form;
 	var b = JSON.parse(a);
 	var email = b.LoginEmail;
 	var password = b.LoginPassword; 
+	console.log(email);
+	console.log(password);
 	var query = "SELECT * FROM cardi_users WHERE cardi_users.email=? AND cardi_users.password=? ";
 	    con.query(query, [email, password], function(err, result, fields) {
 		if (!err) {
 			if(result.length){
 				res.json(result[0]);
 			} else {
-				res.send('err');
+				res.json({error: 'error'});
 			}
 		} else {
+			console.log(1);
 			res.status(400).send(err);
 		}
 	});
