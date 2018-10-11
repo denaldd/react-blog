@@ -33,7 +33,7 @@ var con = mysql.createConnection({
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(session({
-	secret: "HYqrvagQ#&!F!%V]Ww/4KiVs$s",
+	secret: "",
 	resave: true,
 	saveUninitialized: true
 }));
