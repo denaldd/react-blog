@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row, Col, Input, Button} from "mdbreact";
+import {Container, Row, Col, Input, Button, Route, Switch} from "mdbreact";
 
 class Login extends React.Component {
     constructor(props) {
@@ -78,14 +78,28 @@ class Login extends React.Component {
         fetch('http://localhost:3003/login', options)
         .then(function(response) { return response.json(); })
         .then(function(data) {
-          console.log(data)
+          if(data.error){
+            alert('Your password or email are wrong');
+            localStorage.setItem("isLoggedIn", false);
+            localStorage.removeItem("isLoggedIn");
+          } else {
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("user_information", JSON.stringify(data));
+            const Details = (props) => {
+              return (
+                <Switch>
+                  <Route exact path="/login" component={Login} />
+                </Switch>
+              );
+          };
+          }
         });
         event.preventDefault();
       }
   render() {
     return (
     <Container>
-      <Row>
+      <Row> 
         <Col md="6" style={{marginTop: '6rem', marginbottom: '10rem'}}>
             <form onSubmit={this.handleLogin}>
               <p className="h5 text-center mb-4">Sign in</p>
