@@ -75,6 +75,33 @@ class App extends Component {
                 <NavItem>
                   <NavLink
                     exact
+                    to="/photo"
+                    onClick={this.closeCollapse("mainNavbarCollapse")}
+                  >
+                    Photo
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    exact
+                    to="/video"
+                    onClick={this.closeCollapse("mainNavbarCollapse")}
+                  >
+                    Video
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    exact
+                    to="/chat"
+                    onClick={this.closeCollapse("mainNavbarCollapse")}
+                  >
+                  <MenuChat/>
+                  </NavLink>
+                 </NavItem> 
+                <NavItem>
+                  <NavLink
+                    exact
                     to="/login"
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
@@ -120,6 +147,16 @@ class MenuLogin extends Component {
       return <span>Login</span>              
     } else {
       return <span> <FaArrowCircleRight /></span>;
+    }
+  }
+}
+
+class MenuChat extends Component {
+  render(){
+    if(localStorage.getItem("isLoggedIn")){
+      return <span>Chat</span>              
+    } else {
+      return <span></span>;
     }
   }
 }

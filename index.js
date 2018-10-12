@@ -62,8 +62,6 @@ app.post('/register', function(req, res, next){
 	var b = JSON.parse(a);
 	var email = b.LoginEmail;
 	var password = b.LoginPassword; 
-	console.log(email);
-	console.log(password);
 	var query = "SELECT * FROM cardi_users WHERE cardi_users.email=? AND cardi_users.password=? ";
 	    con.query(query, [email, password], function(err, result, fields) {
 		if (!err) {
@@ -78,6 +76,24 @@ app.post('/register', function(req, res, next){
 		}
 	});
 });
+
+app.post('/photo_upload', function(req, res, next){
+	var a = req.body.form;
+	var b = JSON.parse(a);
+	var Title = b.Title;
+	var Subtitle = b.Subtitle;
+	var Subject = b.Subject;
+	var userid = b.userid;
+	var files = b.files;
+	con.connect(function(err) {
+	 var sql = "INSERT INTO cardi_photo (title, subtitle, subject, photo, userid) VALUES (?, ?, ?, ?, ?)";
+		 con.query(sql,  [Title, Subtitle, Subject, files, userid], function (err, result) {
+		   if (!err){
+			 res.json(b);
+		 }
+		 });
+	 });
+ });
 
 var httpServer = http.createServer(app);
 httpServer.listen(3003);
