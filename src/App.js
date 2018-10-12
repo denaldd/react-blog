@@ -13,6 +13,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 
 import Routes from "./Routes";
+import { FaUser, FaArrowCircleRight, FaArrowCircleLeft } from 'react-icons/fa';
 
 class App extends Component {
   constructor(props) {
@@ -58,6 +59,9 @@ class App extends Component {
               isOpen={this.state.collapseID}
               navbar
             >
+            <NavbarNav center="true">
+              <Username/>
+            </NavbarNav>
               <NavbarNav right>
               <NavItem>
                   <NavLink
@@ -74,9 +78,9 @@ class App extends Component {
                     to="/login"
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
-                    LogIn
+                  <MenuLogin/>
                   </NavLink>
-                </NavItem>
+                 </NavItem>            
               </NavbarNav>
             </Collapse>
           </Navbar>
@@ -88,12 +92,35 @@ class App extends Component {
           <Footer color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
               &copy; {new Date().getFullYear()} Copyright:{" "}
-              <a href="https://www.MDBootstrap.com"> CardiB News </a>
+              <a href="http://cardibcommunity.com/"> CardiB News </a>
             </p>
           </Footer>
         </div>
       </Router>
     );
+  }
+}
+
+class Username extends Component {
+  render(){
+    if (localStorage.getItem("isLoggedIn")) {
+      var user_information = localStorage.getItem("user_information");
+      var user_informationJSON = JSON.parse(user_information);
+      var name = user_informationJSON.name;
+      return <span className="username">Welcome {name} <FaUser /></span>;
+    } else {
+      return <span></span>;
+    }
+  }
+}
+
+class MenuLogin extends Component {
+  render(){
+    if(!localStorage.getItem("isLoggedIn")){
+      return <span>Login</span>              
+    } else {
+      return <span> <FaArrowCircleRight /></span>;
+    }
   }
 }
 

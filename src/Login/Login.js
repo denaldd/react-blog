@@ -1,5 +1,8 @@
 import React from "react";
 import {Container, Row, Col, Input, Button, Route, Switch} from "mdbreact";
+import decode from 'jwt-decode';
+import Admin from "../Admin/Admin";
+import {Redirect} from 'react-router-dom';
 
 class Login extends React.Component {
     constructor(props) {
@@ -82,21 +85,31 @@ class Login extends React.Component {
             alert('Your password or email are wrong');
             localStorage.setItem("isLoggedIn", false);
             localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user_information");
+            localStorage.removeItem("user");
           } else {
+            var sec = new Date().getSeconds();
+            var min = new Date().getMinutes();
+            var hours = new Date().getHours();
+            var date = new Date().getDate();
+            var fulldate = new Date();
+            var CreateToken = sec + fulldate + data.country + hours + data.id + min + data.registered_date + date;
+            var token = new Buffer(CreateToken).toString('base64');
             localStorage.setItem("isLoggedIn", true);
             localStorage.setItem("user_information", JSON.stringify(data));
-            const Details = (props) => {
-              return (
-                <Switch>
-                  <Route exact path="/login" component={Login} />
-                </Switch>
-              );
-          };
+            localStorage.setItem('token', token); 
+            if (localStorage.getItem("isLoggedIn")) {
+              window.location = "/admin";
+            }           
           }
         });
         event.preventDefault();
       }
   render() {
+    if (localStorage.getItem("isLoggedIn")) {
+      return <Redirect to='/admin'/>;
+    } 
     return (
     <Container>
       <Row> 
